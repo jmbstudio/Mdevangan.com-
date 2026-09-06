@@ -58,9 +58,17 @@ export function Footer() {
             >
               MDEWANGAN<span className="text-accent-blue">.</span>
             </a>
-            <p className="text-text-secondary leading-relaxed mb-8 max-w-xs text-sm">
+            <p className="text-text-secondary leading-relaxed mb-4 max-w-xs text-sm">
               Building digital products for the future.
             </p>
+            <div className="space-y-2 mb-6 text-sm">
+              <a href="mailto:mdewangan8180@gmail.com" className="flex items-center gap-2 text-text-secondary hover:text-accent-blue transition-colors duration-300">
+                <span>✉</span> mdewangan8180@gmail.com
+              </a>
+              <a href="tel:+919907718878" className="flex items-center gap-2 text-text-secondary hover:text-accent-blue transition-colors duration-300">
+                <span>📞</span> +91 9907718878
+              </a>
+            </div>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <motion.a

@@ -241,6 +241,12 @@ export function Contact() {
                   mdewangan8180@gmail.com
                 </a>
               </p>
+              <p>
+                <span className="text-white font-medium">Phone: </span>
+                <a href="tel:+919907718878" className="text-accent-blue hover:underline">
+                  +91 9907718878
+                </a>
+              </p>
               <p><span className="text-white font-medium">Response time: </span>Within 24 hours</p>
               <p><span className="text-white font-medium">Projects: </span>Global clients welcome</p>
             </div>
