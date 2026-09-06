@@ -1,25 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
+import { Stats } from './components/Stats';
+import { Services } from './components/Services';
+import { FeaturedWork } from './components/FeaturedWork';
+import { TechStack } from './components/TechStack';
+import { AISection } from './components/AISection';
+import { Process } from './components/Process';
+import { WhyUs } from './components/WhyUs';
+import { About } from './components/About';
+import { Testimonials } from './components/Testimonials';
+import { CTA } from './components/CTA';
+import { Contact } from './components/Contact';
+import { Footer } from './components/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <main id="main-content">
+        <Hero />
+        <Stats />
+        <Services />
+        <FeaturedWork />
+        <TechStack />
+        <AISection />
+        <Process />
+        <WhyUs />
+        <About />
+        <Testimonials />
+        <CTA />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
 
