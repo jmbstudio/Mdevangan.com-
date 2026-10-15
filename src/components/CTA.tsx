@@ -1,123 +1,103 @@
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Zap, Bot } from 'lucide-react';
-import { Button } from './ui/Button';
+import { useEffect, useRef } from 'react';
+import { ArrowUpRight, MessageSquare } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function CTA() {
-  const scrollTo = (id: string) =>
-    document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.cta-content',
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: '.cta-content', start: 'top 80%' } }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
-      className="relative section-padding overflow-hidden"
+      ref={sectionRef}
+      className="relative py-24 overflow-hidden"
       aria-labelledby="cta-heading"
     >
-      {/* Animated gradient bg */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        animate={{
-          background: [
-            'radial-gradient(ellipse at center, rgba(79,124,255,0.14) 0%, transparent 70%)',
-            'radial-gradient(ellipse at center, rgba(139,92,246,0.14) 0%, transparent 70%)',
-            'radial-gradient(ellipse at center, rgba(34,211,238,0.10) 0%, transparent 70%)',
-            'radial-gradient(ellipse at center, rgba(79,124,255,0.14) 0%, transparent 70%)',
-          ],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Particles */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1.5 h-1.5 rounded-full pointer-events-none"
-          style={{
-            backgroundColor: ['#4F7CFF', '#8B5CF6', '#22D3EE'][i % 3],
-            top: `${10 + i * 10}%`,
-            left: `${8 + i * 11}%`,
-          }}
-          animate={{ opacity: [0, 0.5, 0], scale: [0, 1, 0] }}
-          transition={{ duration: 4, repeat: Infinity, delay: i * 0.4 }}
-          aria-hidden="true"
-        />
-      ))}
+      <div className="noise-overlay" aria-hidden="true" />
 
       <div className="container-custom relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto"
+        <div
+          className="cta-content opacity-0 relative rounded-3xl overflow-hidden p-12 lg:p-20 text-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(91,141,238,0.06) 50%, rgba(167,139,250,0.06) 100%)',
+            border: '1px solid rgba(201,168,76,0.2)',
+          }}
         >
-          <span
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-blue mb-6"
-            style={{ backgroundColor: 'rgba(79,124,255,0.08)' }}
-          >
-            <Sparkles className="w-4 h-4" aria-hidden="true" />
-            READY TO BUILD?
-          </span>
-
-          <h2
-            id="cta-heading"
-            className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight mb-8"
-          >
-            Have an Idea?
-            <br />
-            <span
-              style={{
-                backgroundImage: 'linear-gradient(135deg, #4F7CFF, #8B5CF6, #22D3EE)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Let's Build It.
-            </span>
-          </h2>
-
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed mb-12 max-w-2xl mx-auto">
-            Tell us what you're building. We'll help turn your idea into a powerful digital
-            product that moves your business forward.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
-            <Button
-              size="lg"
-              variant="primary"
-              onClick={() => scrollTo('#contact')}
-              className="group w-full sm:w-auto"
-            >
-              Start Your Project
-              <ArrowRight
-                className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
-                aria-hidden="true"
-              />
-            </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              onClick={() => scrollTo('#contact')}
-              className="w-full sm:w-auto"
-            >
-              Schedule a Conversation
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </Button>
+          {/* Background image */}
+          <div className="absolute inset-0" aria-hidden="true">
+            <img
+              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&q=80&auto=format&fit=crop"
+              alt=""
+              className="image-cover"
+              style={{ filter: 'brightness(0.05) saturate(0.5)' }}
+            />
           </div>
+          <div className="noise-overlay" aria-hidden="true" />
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-text-secondary/60 text-sm">
-            {[
-              { icon: Zap, label: 'Free initial consultation' },
-              { icon: Bot, label: 'AI strategy included' },
-              { icon: Sparkles, label: 'No commitment required' },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center gap-2">
-                <item.icon className="w-4 h-4 text-accent-blue/60" aria-hidden="true" />
-                <span>{item.label}</span>
-              </div>
-            ))}
+          {/* Top accent */}
+          <div
+            className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+            style={{ background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)' }}
+            aria-hidden="true"
+          />
+
+          {/* Content */}
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <span className="label-tag mb-6 inline-flex">Ready to Build?</span>
+
+            <h2
+              id="cta-heading"
+              className="heading-xl text-white mb-6"
+              style={{ fontSize: 'clamp(36px, 5vw, 72px)' }}
+            >
+              Let's Build Something
+              <br />
+              <span className="text-gradient-gold">Extraordinary.</span>
+            </h2>
+
+            <p className="text-lg text-gray-400 leading-relaxed mb-10 max-w-xl mx-auto">
+              Whether you're a founder with a vision or an enterprise ready to innovate —
+              let's create a digital product that makes a real impact.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                className="btn-gold text-base px-10 py-4"
+                onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Start a Project <ArrowUpRight className="w-4 h-4" />
+              </button>
+              <a
+                href="mailto:mdewangan8180@gmail.com"
+                className="btn-outline text-base px-10 py-4"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Email Directly
+              </a>
+            </div>
+
+            {/* Trust indicators */}
+            <div className="flex items-center justify-center gap-6 mt-10 text-sm text-gray-500">
+              <span>✓ Free consultation</span>
+              <span className="w-px h-4 bg-white/10" aria-hidden="true" />
+              <span>✓ Response in 24 hrs</span>
+              <span className="w-px h-4 bg-white/10" aria-hidden="true" />
+              <span>✓ NDA available</span>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

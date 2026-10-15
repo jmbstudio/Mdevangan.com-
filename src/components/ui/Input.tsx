@@ -1,6 +1,13 @@
 import { forwardRef, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
 import { cn } from '../../lib/utils';
 
+const fieldBase = `
+  w-full px-4 py-3 text-white text-sm placeholder-gray-600 rounded-xl
+  transition-all duration-300 focus:outline-none focus:ring-0
+  bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)]
+  focus:border-[rgba(201,168,76,0.5)] focus:bg-[rgba(255,255,255,0.06)]
+`;
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
@@ -12,7 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="label-field">
+          <label htmlFor={inputId} className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
             {label}
           </label>
         )}
@@ -20,8 +27,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            'input-field',
-            error && 'border-red-500/50 focus:border-red-500/50',
+            fieldBase,
+            error && '!border-red-500/40',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
@@ -50,7 +57,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={textareaId} className="label-field">
+          <label htmlFor={textareaId} className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
             {label}
           </label>
         )}
@@ -58,8 +65,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={textareaId}
           className={cn(
-            'input-field resize-none min-h-[120px]',
-            error && 'border-red-500/50 focus:border-red-500/50',
+            fieldBase,
+            'resize-none min-h-[110px]',
+            error && '!border-red-500/40',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
@@ -89,7 +97,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={selectId} className="label-field">
+          <label htmlFor={selectId} className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
             {label}
           </label>
         )}
@@ -97,20 +105,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'input-field appearance-none cursor-pointer',
-            error && 'border-red-500/50 focus:border-red-500/50',
+            fieldBase,
+            'appearance-none cursor-pointer',
+            error && '!border-red-500/40',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={error ? `${selectId}-error` : undefined}
-          style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+          style={{ backgroundColor: '#0a0d1a' }}
           {...props}
         >
           {options.map((option) => (
             <option
               key={option.value}
               value={option.value}
-              style={{ backgroundColor: '#0D1321', color: '#FFFFFF' }}
+              style={{ backgroundColor: '#0a0d1a', color: '#fff' }}
             >
               {option.label}
             </option>

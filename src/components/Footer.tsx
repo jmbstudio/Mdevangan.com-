@@ -1,196 +1,122 @@
-import { motion } from 'framer-motion';
-import { Linkedin, Instagram, Github, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, Github, Linkedin, Twitter, Mail } from 'lucide-react';
 
-const footerLinks = {
-  services: [
-    { label: 'Premium Websites', href: '#services' },
-    { label: 'Mobile Applications', href: '#services' },
-    { label: 'AI Agents', href: '#services' },
-    { label: 'Automation Systems', href: '#services' },
-    { label: 'Custom Software', href: '#services' },
-  ],
-  company: [
-    { label: 'About', href: '#about' },
-    { label: 'Work', href: '#work' },
-    { label: 'Process', href: '#process' },
-    { label: 'Contact', href: '#contact' },
-  ],
-  legal: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-  ],
+const links = {
+  Services: ['Websites', 'Mobile Apps', 'AI Agents', 'Automation', 'Custom Software'],
+  Company: ['About', 'Work', 'Process', 'Contact'],
 };
 
-const socialLinks = [
-  { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-  { icon: Github, href: 'https://github.com', label: 'GitHub' },
+const socials = [
+  { icon: Github, label: 'GitHub', href: '#' },
+  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: '#' },
+  { icon: Mail, label: 'Email', href: 'mailto:mdewangan8180@gmail.com' },
 ];
 
 export function Footer() {
+  const scrollTo = (id: string) =>
+    document.querySelector(`#${id.toLowerCase()}`)?.scrollIntoView({ behavior: 'smooth' });
+
   return (
     <footer
-      className="relative border-t border-white/[0.08] overflow-hidden"
+      className="relative pt-20 pb-8 overflow-hidden"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
       role="contentinfo"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'linear-gradient(to top, rgba(7,11,20,0.8) 0%, transparent 100%)',
-        }}
-      />
+      <div className="noise-overlay" aria-hidden="true" />
 
-      <div className="container-custom relative z-10 py-16 lg:py-24">
+      <div className="container-custom relative z-10">
         <div className="grid lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
           {/* Brand */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="lg:col-span-1"
-          >
-            <a
-              href="#home"
-              className="font-display font-bold text-2xl lg:text-3xl text-white tracking-tight inline-block mb-5"
-              aria-label="MDEWANGAN - Home"
-            >
-              MDEWANGAN<span className="text-accent-blue">.</span>
-            </a>
-            <p className="text-text-secondary leading-relaxed mb-4 max-w-xs text-sm">
-              Building digital products for the future.
-            </p>
-            <div className="space-y-2 mb-6 text-sm">
-              <a href="mailto:mdewangan8180@gmail.com" className="flex items-center gap-2 text-text-secondary hover:text-accent-blue transition-colors duration-300">
-                <span>✉</span> mdewangan8180@gmail.com
-              </a>
-              <a href="tel:+919907718878" className="flex items-center gap-2 text-text-secondary hover:text-accent-blue transition-colors duration-300">
-                <span>📞</span> +91 9907718878
-              </a>
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-6">
+              <div
+                className="w-8 h-8 rounded-sm flex items-center justify-center font-syne font-black text-xs text-bg-dark"
+                style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c96a)' }}
+              >
+                MD
+              </div>
+              <span className="font-syne font-bold text-white text-lg">
+                DEWANGAN<span className="text-gold">.</span>
+              </span>
             </div>
+
+            <p className="text-gray-400 leading-relaxed mb-6 max-w-xs text-sm">
+              Building premium digital products — websites, mobile apps, AI agents,
+              and automation systems for ambitious businesses worldwide.
+            </p>
+
+            {/* Socials */}
             <div className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-white hover:border-accent-blue/50 border border-white/[0.08] transition-all duration-300"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  aria-label={social.label}
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 hover:text-white hover:border-gold/40 transition-all duration-300"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  target={s.href.startsWith('http') ? '_blank' : undefined}
+                  rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 >
-                  <social.icon className="w-4 h-4" aria-hidden="true" />
-                </motion.a>
+                  <s.icon className="w-4 h-4" aria-hidden="true" />
+                </a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Services */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            <h4 className="font-semibold text-white mb-6 text-sm tracking-wide uppercase">
-              Services
-            </h4>
-            <nav aria-label="Footer services">
+          {/* Links */}
+          {Object.entries(links).map(([category, items]) => (
+            <div key={category}>
+              <h3 className="font-syne font-semibold text-sm text-white uppercase tracking-widest mb-5">
+                {category}
+              </h3>
               <ul className="space-y-3">
-                {footerLinks.services.map((link) => (
-                  <li key={link.label}>
-                    <motion.a
-                      href={link.href}
-                      className="text-text-secondary hover:text-accent-blue transition-colors duration-300 text-sm"
-                      whileHover={{ x: 4 }}
+                {items.map((item) => (
+                  <li key={item}>
+                    <button
+                      onClick={() => scrollTo(item)}
+                      className="text-sm text-gray-400 hover:text-white transition-colors duration-300 text-left"
                     >
-                      {link.label}
-                    </motion.a>
+                      {item}
+                    </button>
                   </li>
                 ))}
               </ul>
-            </nav>
-          </motion.div>
+            </div>
+          ))}
+        </div>
 
-          {/* Company */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+        {/* CTA strip */}
+        <div
+          className="flex flex-col md:flex-row items-center justify-between gap-5 p-6 rounded-2xl mb-12"
+          style={{
+            background: 'rgba(201,168,76,0.06)',
+            border: '1px solid rgba(201,168,76,0.15)',
+          }}
+        >
+          <div>
+            <p className="font-syne font-bold text-white">Ready to start your project?</p>
+            <p className="text-sm text-gray-400 mt-0.5">Let's build something great together.</p>
+          </div>
+          <button
+            className="btn-gold flex-shrink-0"
+            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            <h4 className="font-semibold text-white mb-6 text-sm tracking-wide uppercase">
-              Company
-            </h4>
-            <nav aria-label="Footer company">
-              <ul className="space-y-3">
-                {footerLinks.company.map((link) => (
-                  <li key={link.label}>
-                    <motion.a
-                      href={link.href}
-                      className="text-text-secondary hover:text-accent-blue transition-colors duration-300 text-sm"
-                      whileHover={{ x: 4 }}
-                    >
-                      {link.label}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </motion.div>
-
-          {/* Legal */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <h4 className="font-semibold text-white mb-6 text-sm tracking-wide uppercase">
-              Legal
-            </h4>
-            <nav aria-label="Footer legal">
-              <ul className="space-y-3">
-                {footerLinks.legal.map((link) => (
-                  <li key={link.label}>
-                    <motion.a
-                      href={link.href}
-                      className="text-text-secondary hover:text-accent-blue transition-colors duration-300 text-sm"
-                      whileHover={{ x: 4 }}
-                    >
-                      {link.label}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </motion.div>
+            Get in Touch <ArrowUpRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Bottom bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4"
+        <div
+          className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
         >
-          <p className="text-text-secondary/50 text-sm">
+          <p className="text-xs text-gray-600">
             © {new Date().getFullYear()} Mukesh Dewangan. All rights reserved.
           </p>
-
-          <motion.a
-            href="#contact"
-            className="group inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.08] text-text-secondary hover:text-white hover:border-accent-blue/50 transition-all duration-300 text-sm font-medium"
-            style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-            whileHover={{ x: 2 }}
-          >
-            Start a Project
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
-          </motion.a>
-        </motion.div>
+          <p className="text-xs text-gray-600">
+            Built with React, TypeScript & GSAP
+          </p>
+        </div>
       </div>
     </footer>
   );

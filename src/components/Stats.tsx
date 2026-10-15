@@ -1,126 +1,91 @@
-import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-interface StatItem {
-  value: string;
-  label: string;
-  animateTo?: number;
-  suffix?: string;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-const stats: StatItem[] = [
-  { value: '10+', label: 'Digital Products Built', animateTo: 10, suffix: '+' },
-  { value: '5+', label: 'Technologies Mastered', animateTo: 5, suffix: '+' },
-  { value: 'AI', label: 'Automation Focused' },
-  { value: '24/7', label: 'Innovation Mindset' },
+const stats = [
+  { value: 50, suffix: '+', label: 'Projects Delivered', desc: 'Across web, mobile & AI' },
+  { value: 5, suffix: '+', label: 'Years Experience', desc: 'Full-stack & AI systems' },
+  { value: 100, suffix: '%', label: 'Client Satisfaction', desc: 'Verified by reviews' },
+  { value: 15, suffix: '+', label: 'Happy Clients', desc: 'Startups to enterprises' },
 ];
 
-function AnimatedCounter({
-  end,
-  duration = 2,
-  suffix = '',
-  className,
-}: {
-  end: number;
-  duration?: number;
-  suffix?: string;
-  className?: string;
-}) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const startTime = performance.now();
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / (duration * 1000), 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(easedProgress * end));
-      if (progress < 1) requestAnimationFrame(animate);
-      else setCount(end);
-    };
-    requestAnimationFrame(animate);
-  }, [end, duration]);
-
-  return (
-    <span className={className}>
-      {count}{suffix}
-    </span>
-  );
-}
-
 export function Stats() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.stat-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
         }
-      },
-      { threshold: 0.3 }
-    );
-    if (containerRef.current) observer.observe(containerRef.current);
-    return () => observer.disconnect();
+      );
+
+      // Count-up animation
+      stats.forEach((stat, i) => {
+        const el = document.querySelector(`.stat-num-${i}`);
+        if (!el) return;
+        const counter = { val: 0 };
+        gsap.to(counter, {
+          val: stat.value,
+          duration: 1.8,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' },
+          onUpdate: () => {
+            el.textContent = Math.round(counter.val) + stat.suffix;
+          },
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
-      ref={containerRef}
-      className="relative py-16 lg:py-24 border-y border-white/[0.08] overflow-hidden"
+      ref={sectionRef}
+      className="relative py-20 overflow-hidden"
       aria-label="Key statistics"
     >
+      {/* Top border */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent)' }}
         aria-hidden="true"
-        style={{
-          background:
-            'linear-gradient(90deg, rgba(79,124,255,0.04) 0%, transparent 50%, rgba(139,92,246,0.04) 100%)',
-        }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)' }}
+        aria-hidden="true"
       />
 
-      <div className="container-custom relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {stats.map((stat, index) => (
-            <motion.div
+      <div className="container-custom">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {stats.map((stat, i) => (
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.12, duration: 0.6, ease: 'easeOut' }}
-              className="relative"
+              className="stat-card text-center lg:text-left p-6 lg:p-8 rounded-2xl glass opacity-0"
+              style={{ borderColor: 'rgba(255,255,255,0.06)' }}
             >
-              {/* Accent line */}
-              <motion.div
-                className="w-8 h-0.5 mb-4 rounded-full"
-                style={{
-                  background: 'linear-gradient(90deg, #4F7CFF, #8B5CF6)',
-                }}
-                initial={{ scaleX: 0 }}
-                animate={isVisible ? { scaleX: 1 } : {}}
-                transition={{ delay: index * 0.12 + 0.3, duration: 0.5 }}
-                aria-hidden="true"
-              />
-
-              {/* Value */}
-              {stat.animateTo !== undefined && isVisible ? (
-                <AnimatedCounter
-                  end={stat.animateTo}
-                  suffix={stat.suffix}
-                  className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-none block"
-                />
-              ) : (
-                <span className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-none block">
-                  {stat.value}
-                </span>
-              )}
-
-              {/* Label */}
-              <p className="mt-3 text-text-secondary text-base lg:text-lg font-medium">
-                {stat.label}
-              </p>
-            </motion.div>
+              <div
+                className={`stat-num-${i} font-syne font-extrabold text-4xl lg:text-5xl text-white mb-2`}
+                aria-label={`${stat.value}${stat.suffix}`}
+              >
+                {stat.value}{stat.suffix}
+              </div>
+              <div className="font-semibold text-sm text-white mb-1">{stat.label}</div>
+              <div className="text-xs text-gray-500">{stat.desc}</div>
+            </div>
           ))}
         </div>
       </div>

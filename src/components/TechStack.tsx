@@ -1,148 +1,108 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-interface TechItem {
-  name: string;
-  icon: string;
-  color: string;
-  category: string;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-const techStack: TechItem[] = [
-  { name: 'React', icon: '⚛', color: '#61DAFB', category: 'Frontend' },
-  { name: 'Next.js', icon: '▲', color: '#FFFFFF', category: 'Framework' },
-  { name: 'TypeScript', icon: 'TS', color: '#3178C6', category: 'Language' },
-  { name: 'Node.js', icon: '◉', color: '#339933', category: 'Backend' },
-  { name: 'Flutter', icon: '✦', color: '#54C5F8', category: 'Mobile' },
-  { name: 'React Native', icon: '⚛', color: '#61DAFB', category: 'Mobile' },
-  { name: 'MongoDB', icon: '🍃', color: '#47A248', category: 'Database' },
-  { name: 'PostgreSQL', icon: '🐘', color: '#4169E1', category: 'Database' },
-  { name: 'OpenAI', icon: '◎', color: '#74AA9C', category: 'AI' },
-  { name: 'Claude', icon: '◐', color: '#D97757', category: 'AI' },
-  { name: 'Gemini', icon: '✦', color: '#4285F4', category: 'AI' },
-  { name: 'Python', icon: '🐍', color: '#3776AB', category: 'Language' },
-  { name: 'Docker', icon: '🐳', color: '#2496ED', category: 'DevOps' },
-  { name: 'Cloud', icon: '☁', color: '#FF9900', category: 'Cloud' },
+const techs = [
+  { name: 'React', color: '#61DBFB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'Next.js', color: '#fff', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
+  { name: 'TypeScript', color: '#3178C6', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
+  { name: 'Node.js', color: '#68A063', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+  { name: 'Python', color: '#FFE873', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+  { name: 'React Native', color: '#61DBFB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'PostgreSQL', color: '#336791', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
+  { name: 'MongoDB', color: '#4DB33D', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
+  { name: 'Docker', color: '#2496ED', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
+  { name: 'AWS', color: '#FF9900', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg' },
+  { name: 'Tailwind', color: '#38BDF8', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg' },
+  { name: 'OpenAI', color: '#c9a84c', icon: '' },
 ];
 
 export function TechStack() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.tech-header',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: '.tech-header', start: 'top 80%' } }
+      );
+      gsap.fromTo('.tech-chip',
+        { opacity: 0, scale: 0.85 },
+        {
+          opacity: 1, scale: 1, duration: 0.4, stagger: 0.05, ease: 'back.out(1.6)',
+          scrollTrigger: { trigger: '.tech-chips', start: 'top 80%' },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
-      className="relative section-padding overflow-hidden"
+      ref={sectionRef}
+      className="relative py-24 overflow-hidden"
       aria-labelledby="tech-heading"
     >
+      <div className="noise-overlay" aria-hidden="true" />
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse at bottom, rgba(34,211,238,0.06) 0%, transparent 60%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(91,141,238,0.04) 0%, transparent 60%)' }}
       />
 
       <div className="container-custom relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-cyan mb-6"
-            style={{ backgroundColor: 'rgba(34,211,238,0.08)' }}
-          >
-            TECHNOLOGY
-          </span>
+        <div className="tech-header text-center mb-16 opacity-0">
+          <span className="label-tag mb-5 inline-flex">Tech Stack</span>
           <h2
             id="tech-heading"
-            className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6"
+            className="heading-lg text-white"
+            style={{ fontSize: 'clamp(32px, 4vw, 52px)' }}
           >
-            Built With Modern Technology
+            Tools of the Trade
           </h2>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-            We choose the right tools for the job — modern, scalable, and battle-tested.
+          <p className="text-gray-400 mt-4 max-w-lg mx-auto">
+            Modern, battle-tested stack chosen for performance and scalability.
           </p>
-        </motion.div>
-
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-3 lg:gap-4">
-          {techStack.map((tech, index) => (
-            <motion.div
-              key={tech.name}
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{
-                delay: index * 0.05,
-                duration: 0.4,
-                type: 'spring',
-                stiffness: 200,
-              }}
-            >
-              <TechCard tech={tech} />
-            </motion.div>
-          ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="mt-12 text-center text-text-secondary/50 text-sm"
-        >
-          And many more — we continuously evaluate and adopt emerging technologies.
-        </motion.p>
+        <div className="tech-chips flex flex-wrap gap-3 justify-center max-w-4xl mx-auto">
+          {techs.map((tech) => (
+            <div
+              key={tech.name}
+              className="tech-chip opacity-0 group flex items-center gap-2.5 px-4 py-2.5 rounded-full cursor-default transition-all duration-300 hover:-translate-y-1"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              {tech.icon ? (
+                <img
+                  src={tech.icon}
+                  alt=""
+                  className="w-4 h-4"
+                  style={{ filter: 'brightness(1.1)' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  aria-hidden="true"
+                />
+              ) : (
+                <div
+                  className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: tech.color, fontSize: 7, color: '#000', fontWeight: 900 }}
+                  aria-hidden="true"
+                >
+                  AI
+                </div>
+              )}
+              <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
+                {tech.name}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-
-function TechCard({ tech }: { tech: TechItem }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.button
-      className="tech-icon w-full relative overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      aria-label={`${tech.name} — ${tech.category}`}
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 300 }}
-    >
-      {/* Hover bg */}
-      <div
-        className="absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300"
-        style={{
-          background: `linear-gradient(135deg, ${tech.color}15, ${tech.color}30)`,
-          opacity: isHovered ? 1 : 0,
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 flex flex-col items-center gap-2 py-1">
-        <span
-          className="text-2xl w-10 h-10 flex items-center justify-center rounded-lg font-bold"
-          style={{
-            background: `linear-gradient(135deg, ${tech.color}20, ${tech.color}35)`,
-            color: tech.color,
-            fontSize: tech.icon.length > 2 ? '14px' : '20px',
-          }}
-        >
-          {tech.icon}
-        </span>
-        <span className="font-medium text-white text-xs text-center leading-tight">{tech.name}</span>
-        <span className="text-[10px] text-text-secondary/60 text-center">{tech.category}</span>
-      </div>
-
-      {/* Bottom bar */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full origin-left"
-        style={{ background: tech.color }}
-        initial={{ scaleX: 0 }}
-        animate={isHovered ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        aria-hidden="true"
-      />
-    </motion.button>
   );
 }

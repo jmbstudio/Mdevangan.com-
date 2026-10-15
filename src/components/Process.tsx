@@ -1,201 +1,146 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, Lightbulb, PenTool, Code, Rocket } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { MessageSquare, Lightbulb, Code2, Rocket } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const processSteps = [
+gsap.registerPlugin(ScrollTrigger);
+
+const steps = [
   {
     number: '01',
-    title: 'Discover',
-    description: 'We understand your idea, goals and requirements through deep research and stakeholder interviews.',
-    icon: Search,
-    color: '#4F7CFF',
+    icon: MessageSquare,
+    title: 'Discovery Call',
+    description: 'We kick off with a free consultation to understand your vision, goals, and constraints. No fluff — just clarity.',
+    color: '#5b8dee',
   },
   {
     number: '02',
-    title: 'Strategy',
-    description: 'We define the right technology stack, architecture and product roadmap for your success.',
     icon: Lightbulb,
-    color: '#8B5CF6',
+    title: 'Strategy & Design',
+    description: 'We map out the architecture, tech stack, and UX. You approve before a single line of code is written.',
+    color: '#c9a84c',
   },
   {
     number: '03',
-    title: 'Design',
-    description: 'We create intuitive and premium user experiences with pixel-perfect attention to detail.',
-    icon: PenTool,
-    color: '#22D3EE',
+    icon: Code2,
+    title: 'Build & Iterate',
+    description: 'Rapid development with weekly updates. You see progress, give feedback, and we adjust in real time.',
+    color: '#a78bfa',
   },
   {
     number: '04',
-    title: 'Build',
-    description: 'We develop scalable and high-performance products using modern engineering practices.',
-    icon: Code,
-    color: '#10B981',
-  },
-  {
-    number: '05',
-    title: 'Launch',
-    description: 'We deploy, optimize and support your product with continuous monitoring and iteration.',
     icon: Rocket,
-    color: '#F59E0B',
+    title: 'Launch & Scale',
+    description: 'We deploy, test, and hand over a product that\'s ready to grow. Post-launch support included.',
+    color: '#67e8f9',
   },
 ];
 
 export function Process() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.process-header',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: '.process-header', start: 'top 80%' } }
+      );
+      gsap.fromTo('.process-step',
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: '.process-steps', start: 'top 75%' },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="process"
       className="relative section-padding overflow-hidden"
       aria-labelledby="process-heading"
     >
+      <div className="noise-overlay" aria-hidden="true" />
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse at top, rgba(34,211,238,0.06) 0%, transparent 60%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(167,139,250,0.04) 0%, transparent 60%)' }}
       />
 
       <div className="container-custom relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-cyan mb-6"
-            style={{ backgroundColor: 'rgba(34,211,238,0.08)' }}
-          >
-            OUR PROCESS
-          </span>
+        <div className="process-header text-center max-w-2xl mx-auto mb-20 opacity-0">
+          <span className="label-tag mb-5 inline-flex">How It Works</span>
           <h2
             id="process-heading"
-            className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6"
+            className="heading-lg text-white mb-5"
+            style={{ fontSize: 'clamp(32px, 4vw, 56px)' }}
           >
-            From Idea to Product
+            From Idea to{' '}
+            <span className="text-gradient-gold">Shipped Product</span>
           </h2>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-            A proven process that transforms concepts into market-ready digital products.
+          <p className="text-gray-400 leading-relaxed">
+            A streamlined process designed to minimize back-and-forth and maximize output.
           </p>
-        </motion.div>
-
-        {/* Steps */}
-        <div className="relative">
-          {/* Desktop connecting line */}
-          <motion.div
-            className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 z-0"
-            style={{
-              background: 'linear-gradient(90deg, #4F7CFF, #8B5CF6, #22D3EE, #10B981, #F59E0B)',
-            }}
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 1.4, delay: 0.3, ease: 'easeOut' }}
-            aria-hidden="true"
-          />
-
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
-            {processSteps.map((step, index) => (
-              <StepCard key={step.number} step={step} index={index} />
-            ))}
-          </div>
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          className="mt-20 text-center"
-        >
-          <p className="text-text-secondary/60 mb-3 text-sm">Ready to start your project?</p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 text-accent-blue font-semibold hover:text-accent-cyan transition-colors"
-          >
-            Let's talk about your idea
-            <motion.span
-              animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              aria-hidden="true"
+        {/* Steps */}
+        <div className="process-steps grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((step, index) => (
+            <div
+              key={step.number}
+              className="process-step opacity-0 relative p-7 rounded-2xl group"
+              style={{
+                background: 'rgba(10,13,26,0.6)',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}
             >
-              →
-            </motion.span>
-          </a>
-        </motion.div>
+              {/* Connector line */}
+              {index < steps.length - 1 && (
+                <div
+                  className="absolute top-10 -right-3 w-6 h-px hidden lg:block"
+                  style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.1), transparent)' }}
+                  aria-hidden="true"
+                />
+              )}
+
+              {/* Number */}
+              <div
+                className="font-syne font-extrabold text-6xl leading-none mb-6"
+                style={{ color: `${step.color}15` }}
+                aria-hidden="true"
+              >
+                {step.number}
+              </div>
+
+              {/* Icon */}
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+                style={{
+                  background: `${step.color}15`,
+                  border: `1px solid ${step.color}30`,
+                }}
+              >
+                <step.icon className="w-5 h-5" style={{ color: step.color }} aria-hidden="true" />
+              </div>
+
+              <h3 className="font-syne font-bold text-lg text-white mb-3">{step.title}</h3>
+              <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
+
+              {/* Bottom accent */}
+              <div
+                className="absolute bottom-0 left-6 right-6 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ background: `linear-gradient(90deg, transparent, ${step.color}60, transparent)` }}
+                aria-hidden="true"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-
-function StepCard({ step, index }: { step: typeof processSteps[0]; index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ delay: 0.15 + index * 0.15, duration: 0.6 }}
-      className="relative flex-1 lg:px-4 z-10"
-    >
-      {/* Icon */}
-      <motion.div
-        className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto lg:mx-0 lg:ml-auto lg:mr-auto relative cursor-default"
-        style={{
-          background: `linear-gradient(135deg, ${step.color}20, ${step.color}40)`,
-          border: `1px solid ${step.color}50`,
-        }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        animate={{
-          scale: isHovered ? 1.1 : 1,
-          boxShadow: isHovered
-            ? `0 0 40px ${step.color}50`
-            : `0 0 15px ${step.color}25`,
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      >
-        <step.icon className="w-8 h-8" style={{ color: step.color }} aria-hidden="true" />
-
-        {/* Step badge */}
-        <motion.span
-          className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-xs font-bold text-white flex items-center justify-center"
-          style={{ backgroundColor: step.color }}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.3 + index * 0.15, type: 'spring', stiffness: 300 }}
-        >
-          {index + 1}
-        </motion.span>
-
-        {/* Pulse ring */}
-        <motion.div
-          className="absolute inset-0 rounded-2xl border-2"
-          style={{ borderColor: step.color }}
-          animate={{ scale: [1, 1.06, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 2.5, repeat: Infinity, delay: index * 0.3 }}
-          aria-hidden="true"
-        />
-      </motion.div>
-
-      {/* Content */}
-      <div className="mt-8 text-center lg:text-left">
-        <span
-          className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3"
-          style={{
-            backgroundColor: `${step.color}18`,
-            color: step.color,
-          }}
-        >
-          STEP {step.number}
-        </span>
-        <h3 className="font-display font-bold text-2xl text-white mb-3">{step.title}</h3>
-        <p className="text-text-secondary leading-relaxed text-sm">{step.description}</p>
-      </div>
-    </motion.div>
   );
 }

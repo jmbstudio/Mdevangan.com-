@@ -1,103 +1,129 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Globe, Smartphone, Bot, Zap, Server, ArrowRight, Check } from 'lucide-react';
-import { Card } from './ui/Card';
+import { useEffect, useRef } from 'react';
+import { Globe, Smartphone, Bot, Zap, Server, Check, ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-interface Service {
-  number: string;
-  title: string;
-  description: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  features: string[];
-  accentColor: string;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-const services: Service[] = [
+const services = [
   {
     number: '01',
     title: 'Premium Websites',
-    description: 'Fast, responsive and visually stunning websites designed to convert visitors into customers.',
+    description: 'Fast, conversion-focused websites with stunning UI. Built to impress from first click.',
     icon: Globe,
-    features: ['Landing Pages', 'Business Websites', 'Portfolio Websites', 'E-commerce', 'Custom Web Platforms'],
-    accentColor: '#4F7CFF',
+    features: ['Landing Pages', 'Business Websites', 'Portfolio Sites', 'E-commerce'],
+    color: '#5b8dee',
+    bg: 'rgba(91,141,238,0.08)',
+    border: 'rgba(91,141,238,0.2)',
+    image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80&auto=format&fit=crop',
   },
   {
     number: '02',
-    title: 'Mobile Applications',
-    description: 'Beautiful, scalable mobile experiences built for Android and iOS.',
+    title: 'Mobile Apps',
+    description: 'Polished iOS & Android experiences your users will love, built for scale.',
     icon: Smartphone,
-    features: ['Startup Apps', 'Business Apps', 'SaaS Apps', 'Custom Mobile Platforms'],
-    accentColor: '#8B5CF6',
+    features: ['Startup Apps', 'Business Apps', 'SaaS Mobile', 'Custom Platforms'],
+    color: '#a78bfa',
+    bg: 'rgba(167,139,250,0.08)',
+    border: 'rgba(167,139,250,0.2)',
+    image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80&auto=format&fit=crop',
   },
   {
     number: '03',
     title: 'AI Agents',
-    description: 'Intelligent AI agents that can understand tasks, automate workflows and work around the clock.',
+    description: 'Intelligent autonomous agents that understand tasks, take actions and work 24/7.',
     icon: Bot,
-    features: ['Customer Support Agents', 'Business AI Agents', 'Research Agents', 'Custom AI Workflows'],
-    accentColor: '#22D3EE',
+    features: ['Support Agents', 'Research Agents', 'Business Agents', 'Custom Workflows'],
+    color: '#c9a84c',
+    bg: 'rgba(201,168,76,0.08)',
+    border: 'rgba(201,168,76,0.2)',
+    image: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80&auto=format&fit=crop',
   },
   {
     number: '04',
-    title: 'Automation Systems',
-    description: 'Eliminate repetitive work with powerful automation pipelines.',
+    title: 'Automation',
+    description: 'Eliminate repetitive work. Connect your tools and let systems run themselves.',
     icon: Zap,
-    features: ['Workflow Automation', 'API Integrations', 'Business Automation', 'Data Processing'],
-    accentColor: '#4F7CFF',
+    features: ['Workflow Automation', 'API Integrations', 'Data Processing', 'Notifications'],
+    color: '#67e8f9',
+    bg: 'rgba(103,232,249,0.08)',
+    border: 'rgba(103,232,249,0.2)',
+    image: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&q=80&auto=format&fit=crop',
   },
   {
     number: '05',
     title: 'Custom Software',
-    description: 'Tailored software solutions built around your exact business requirements.',
+    description: 'Tailored digital tools built around your exact operations. No compromise.',
     icon: Server,
     features: ['Admin Dashboards', 'CRM Systems', 'SaaS Platforms', 'Internal Tools'],
-    accentColor: '#8B5CF6',
+    color: '#f9a8d4',
+    bg: 'rgba(249,168,212,0.08)',
+    border: 'rgba(249,168,212,0.2)',
+    image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80&auto=format&fit=crop',
   },
 ];
 
 export function Services() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.services-header',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: '.services-header', start: 'top 80%' } }
+      );
+
+      gsap.fromTo('.service-item',
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.services-grid',
+            start: 'top 75%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="services"
       className="relative section-padding overflow-hidden"
       aria-labelledby="services-heading"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse at top, rgba(79,124,255,0.06) 0%, transparent 60%)',
-        }}
-      />
+      <div className="noise-overlay" aria-hidden="true" />
 
       <div className="container-custom relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-blue mb-6"
-            style={{ backgroundColor: 'rgba(79,124,255,0.08)' }}
-          >
-            WHAT WE BUILD
-          </span>
-          <h2
-            id="services-heading"
-            className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6"
-          >
-            What We Build
-          </h2>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-            End-to-end digital solutions designed for ambitious businesses.
+        <div className="services-header flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-20 opacity-0">
+          <div>
+            <span className="label-tag mb-5 inline-flex">What We Build</span>
+            <h2
+              id="services-heading"
+              className="heading-lg text-white"
+              style={{ fontSize: 'clamp(36px, 4.5vw, 64px)' }}
+            >
+              Services That
+              <br />
+              <span className="text-gradient-gold">Drive Results</span>
+            </h2>
+          </div>
+          <p className="text-gray-400 max-w-sm leading-relaxed lg:text-right">
+            End-to-end digital solutions designed for ambitious teams ready to scale.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* Cards grid */}
+        <div className="services-grid grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <ServiceCard key={service.title} service={service} index={index} />
           ))}
@@ -107,93 +133,116 @@ export function Services() {
   );
 }
 
-function ServiceCard({ service, index }: { service: Service; index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
+function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 12;
+    gsap.to(cardRef.current, {
+      rotateX: -y,
+      rotateY: x,
+      transformPerspective: 800,
+      duration: 0.4,
+      ease: 'power2.out',
+    });
+  };
+
+  const handleMouseLeave = () => {
+    gsap.to(cardRef.current, {
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.6,
+      ease: 'elastic.out(1, 0.5)',
+    });
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ delay: index * 0.1, duration: 0.6 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="h-full"
+    <div
+      ref={cardRef}
+      className="service-item opacity-0 group relative rounded-2xl overflow-hidden cursor-pointer"
+      style={{
+        background: service.bg,
+        border: `1px solid ${service.border}`,
+        transformStyle: 'preserve-3d',
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      <Card variant="interactive" padding="lg" className="relative overflow-hidden group h-full flex flex-col">
-        {/* Hover glow */}
+      {/* Image header */}
+      <div className="relative overflow-hidden" style={{ height: 180 }}>
+        <img
+          src={service.image}
+          alt={service.title}
+          className="image-cover transition-transform duration-700 group-hover:scale-110"
+        />
         <div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          aria-hidden="true"
+          className="absolute inset-0"
           style={{
-            background: `radial-gradient(ellipse at top left, ${service.accentColor}18 0%, transparent 60%)`,
+            background: `linear-gradient(to bottom, ${service.bg} 0%, rgba(5,7,15,0.9) 100%)`,
           }}
-        />
-
-        <div className="relative z-10 flex flex-col h-full">
-          {/* Icon + number */}
-          <div className="flex items-start justify-between mb-6">
-            <div
-              className="w-14 h-14 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-              style={{
-                background: `linear-gradient(135deg, ${service.accentColor}20, ${service.accentColor}35)`,
-                border: `1px solid ${service.accentColor}30`,
-              }}
-            >
-              <service.icon className="w-7 h-7" style={{ color: service.accentColor }} aria-hidden="true" />
-            </div>
-            <span className="font-display font-bold text-3xl" style={{ color: `${service.accentColor}25` }}>
-              {service.number}
-            </span>
-          </div>
-
-          <h3 className="font-display font-bold text-2xl text-white mb-4">{service.title}</h3>
-          <p className="text-text-secondary leading-relaxed mb-6">{service.description}</p>
-
-          {/* Features */}
-          <ul className="space-y-2.5 mb-8 flex-1">
-            {service.features.map((feature) => (
-              <li key={feature} className="flex items-center gap-3 text-text-secondary group-hover:text-white/80 transition-colors">
-                <span
-                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: `${service.accentColor}20` }}
-                >
-                  <Check className="w-3 h-3" style={{ color: service.accentColor }} aria-hidden="true" />
-                </span>
-                <span className="text-sm">{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Learn more */}
-          <motion.button
-            className="group/btn flex items-center justify-between px-4 py-3 rounded-xl border border-white/[0.08] hover:border-white/20 transition-all duration-300 mt-auto"
-            style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
-            whileHover={{ x: 4 }}
-            aria-label={`Learn more about ${service.title}`}
-          >
-            <span className="font-medium text-text-secondary group-hover/btn:text-white transition-colors text-sm">
-              Learn more
-            </span>
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${service.accentColor}, #8B5CF6)` }}
-            >
-              <ArrowRight className="w-3.5 h-3.5 text-white" aria-hidden="true" />
-            </div>
-          </motion.button>
-        </div>
-
-        {/* Bottom border glow */}
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-0.5 origin-left rounded-full"
-          style={{ background: `linear-gradient(90deg, ${service.accentColor}, transparent)` }}
-          initial={{ scaleX: 0 }}
-          animate={isHovered ? { scaleX: 1 } : { scaleX: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
           aria-hidden="true"
         />
-      </Card>
-    </motion.div>
+        {/* Number */}
+        <div className="absolute top-4 right-4">
+          <span
+            className="font-syne font-extrabold text-5xl leading-none"
+            style={{ color: service.color, opacity: 0.2 }}
+          >
+            {service.number}
+          </span>
+        </div>
+        {/* Icon */}
+        <div className="absolute bottom-4 left-5">
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center"
+            style={{ background: `${service.color}20`, border: `1px solid ${service.color}40` }}
+          >
+            <service.icon className="w-5 h-5" style={{ color: service.color }} aria-hidden="true" />
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="font-syne font-bold text-xl text-white mb-3">{service.title}</h3>
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">{service.description}</p>
+
+        {/* Features */}
+        <ul className="space-y-2 mb-6">
+          {service.features.map((f) => (
+            <li key={f} className="flex items-center gap-2.5 text-sm text-gray-400">
+              <Check className="w-3.5 h-3.5 flex-shrink-0" style={{ color: service.color }} aria-hidden="true" />
+              {f}
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA */}
+        <button
+          className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition-all duration-300 group/btn"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+          onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+          aria-label={`Learn more about ${service.title}`}
+        >
+          <span>Discuss Project</span>
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-300 group-hover/btn:scale-110"
+            style={{ background: service.color }}
+          >
+            <ArrowUpRight className="w-3.5 h-3.5 text-bg-dark" aria-hidden="true" />
+          </div>
+        </button>
+      </div>
+
+      {/* Bottom glow line */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, ${service.color}60, transparent)` }}
+        aria-hidden="true"
+      />
+    </div>
   );
 }

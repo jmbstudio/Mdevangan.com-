@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Menu, X, ChevronRight } from 'lucide-react';
-import { Button } from './ui/Button';
-import { cn } from '../lib/utils';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -15,9 +13,19 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const logoRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    // GSAP entrance
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.fromTo(navRef.current, { y: -80, opacity: 0 }, { y: 0, opacity: 1, duration: 1 });
+    tl.fromTo('.nav-link', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, '-=0.4');
+    tl.fromTo('.nav-cta', { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4 }, '-=0.3');
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -28,67 +36,70 @@ export function Navbar() {
   };
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'backdrop-blur-2xl border-b border-white/[0.08]'
-          : 'bg-transparent'
-      )}
-      style={isScrolled ? { backgroundColor: 'rgba(7,11,20,0.85)' } : undefined}
+    <header
+      ref={navRef}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: isScrolled
+          ? 'rgba(5,7,15,0.92)'
+          : 'transparent',
+        backdropFilter: isScrolled ? 'blur(24px)' : 'none',
+        WebkitBackdropFilter: isScrolled ? 'blur(24px)' : 'none',
+        borderBottom: isScrolled ? '1px solid rgba(255,255,255,0.05)' : 'none',
+      }}
       role="banner"
     >
       <nav className="container-custom" aria-label="Main navigation">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <motion.a
+          <a
+            ref={logoRef}
             href="#home"
-            className="font-display font-bold text-xl lg:text-2xl text-white tracking-tight"
+            className="flex items-center gap-2 group"
             aria-label="MDEWANGAN - Home"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
-            MDEWANGAN<span className="text-accent-blue">.</span>
-          </motion.a>
+            <div
+              className="w-8 h-8 rounded-sm flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c96a)' }}
+            >
+              <span className="text-xs font-black text-bg-dark font-syne tracking-tight">MD</span>
+            </div>
+            <span className="font-syne font-800 text-lg text-white tracking-tight">
+              DEWANGAN
+              <span className="text-gold">.</span>
+            </span>
+          </a>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-10">
-            {navLinks.map((link, index) => (
-              <motion.a
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a
                 key={link.href}
                 href={link.href}
-                className="text-text-secondary hover:text-white font-medium transition-colors duration-300 relative py-2 group"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (index + 1), duration: 0.4 }}
+                className="nav-link relative text-sm font-medium text-gray-400 hover:text-white transition-colors duration-300 py-2 group"
+                onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent-blue to-accent-purple group-hover:w-full transition-all duration-300 rounded-full" />
-              </motion.a>
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300" />
+              </a>
             ))}
           </div>
 
           {/* CTA */}
           <div className="flex items-center gap-4">
-            <Button
-              variant="primary"
-              size="md"
-              className="hidden lg:inline-flex"
+            <button
+              className="nav-cta btn-gold hidden lg:inline-flex"
               onClick={() => scrollTo('#contact')}
             >
-              Start a Project
-              <ChevronRight className="w-4 h-4" aria-hidden="true" />
-            </Button>
+              Let's Talk
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile toggle */}
             <button
-              className="lg:hidden p-2 text-white hover:text-accent-blue transition-colors rounded-xl"
+              className="lg:hidden p-2 text-white hover:text-gold transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
               aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -98,43 +109,36 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden overflow-hidden border-t border-white/[0.08]"
-            style={{ backgroundColor: 'rgba(7,11,20,0.97)' }}
-            role="navigation"
-            aria-label="Mobile navigation"
+          <div
+            className="lg:hidden border-t overflow-hidden"
+            style={{
+              borderColor: 'rgba(255,255,255,0.05)',
+              background: 'rgba(5,7,15,0.98)',
+            }}
           >
-            <div className="py-6 space-y-2">
-              {navLinks.map((link, index) => (
-                <motion.a
+            <div className="py-6 space-y-1">
+              {navLinks.map((link) => (
+                <a
                   key={link.href}
                   href={link.href}
-                  className="block px-4 py-3 text-text-secondary hover:text-white font-medium transition-colors duration-300 rounded-xl mx-2 hover:bg-white/5"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * (index + 1), duration: 0.3 }}
+                  className="block px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all duration-200 rounded-lg mx-2 text-sm"
+                  onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
                 >
                   {link.label}
-                </motion.a>
+                </a>
               ))}
-              <div className="pt-4 border-t border-white/[0.08] px-4">
-                <Button
-                  variant="primary"
-                  className="w-full justify-center"
+              <div className="pt-4 px-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                <button
+                  className="btn-gold w-full justify-center"
                   onClick={() => scrollTo('#contact')}
                 >
-                  Start a Project
-                </Button>
+                  Let's Talk <ArrowUpRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
       </nav>
-    </motion.header>
+    </header>
   );
 }

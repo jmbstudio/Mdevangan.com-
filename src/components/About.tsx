@@ -1,214 +1,200 @@
-import { motion } from 'framer-motion';
-import { Code, Brain, Zap, Award } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { ArrowUpRight, Code2, Brain, Zap, Globe } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const skills = [
+  { icon: Code2, label: 'Full-Stack Dev', color: '#5b8dee' },
+  { icon: Brain, label: 'AI & ML', color: '#c9a84c' },
+  { icon: Zap, label: 'Automation', color: '#a78bfa' },
+  { icon: Globe, label: 'SaaS Products', color: '#67e8f9' },
+];
+
+const timeline = [
+  { year: '2019', desc: 'Started freelancing — built first client website.' },
+  { year: '2021', desc: 'Scaled to full-stack web + mobile applications.' },
+  { year: '2023', desc: 'Entered the AI space — built intelligent agents & automation.' },
+  { year: 'Now', desc: 'Helping businesses ship premium digital products at scale.' },
+];
 
 export function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.about-img',
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: '.about-img', start: 'top 80%' } }
+      );
+      gsap.fromTo('.about-text-block',
+        { opacity: 0, x: 50 },
+        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: '.about-text-block', start: 'top 80%' } }
+      );
+      gsap.fromTo('.timeline-item',
+        { opacity: 0, x: 20 },
+        {
+          opacity: 1, x: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out',
+          scrollTrigger: { trigger: '.timeline-wrap', start: 'top 80%' },
+        }
+      );
+      gsap.fromTo('.skill-chip',
+        { opacity: 0, scale: 0.85 },
+        {
+          opacity: 1, scale: 1, duration: 0.4, stagger: 0.08, ease: 'back.out(1.4)',
+          scrollTrigger: { trigger: '.skill-chips', start: 'top 85%' },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="about"
       className="relative section-padding overflow-hidden"
       aria-labelledby="about-heading"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse at bottom, rgba(79,124,255,0.06) 0%, transparent 60%)',
-        }}
-      />
+      <div className="noise-overlay" aria-hidden="true" />
 
       <div className="container-custom relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Visual left */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7 }}
-            className="relative"
-            role="img"
-            aria-label="Abstract technology visualization representing Mukesh's skills"
-          >
-            <div className="relative aspect-square max-w-lg mx-auto lg:mx-0">
-              {/* Outer glow */}
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* Left — Image */}
+          <div className="about-img opacity-0 relative">
+            <div className="relative max-w-lg mx-auto lg:mx-0">
+              {/* Gold accent border */}
               <div
-                className="absolute -inset-8 rounded-full pointer-events-none"
-                aria-hidden="true"
+                className="absolute -inset-0.5 rounded-2xl pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(79,124,255,0.08) 0%, transparent 70%)',
-                  filter: 'blur(20px)',
+                  background: 'linear-gradient(135deg, rgba(201,168,76,0.4) 0%, transparent 50%, rgba(91,141,238,0.2) 100%)',
                 }}
+                aria-hidden="true"
               />
 
-              <motion.div
-                className="absolute inset-0 rounded-3xl border overflow-hidden"
-                style={{
-                  borderColor: 'rgba(255,255,255,0.08)',
-                  backgroundColor: 'rgba(13,19,33,0.7)',
-                  backdropFilter: 'blur(20px)',
-                }}
-                animate={{
-                  borderColor: ['rgba(255,255,255,0.08)', 'rgba(79,124,255,0.25)', 'rgba(255,255,255,0.08)'],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-              >
-                {/* Grid */}
+              {/* Main image */}
+              <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
+                <img
+                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=900&q=85&auto=format&fit=crop"
+                  alt="Developer at work"
+                  className="image-cover"
+                />
                 <div
-                  className="absolute inset-0 opacity-[0.05]"
+                  className="absolute inset-0"
                   style={{
-                    backgroundImage:
-                      'linear-gradient(rgba(79,124,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(79,124,255,0.8) 1px, transparent 1px)',
-                    backgroundSize: '30px 30px',
+                    background: 'linear-gradient(to top, rgba(5,7,15,0.85) 0%, rgba(5,7,15,0.1) 60%, transparent 100%)',
                   }}
                   aria-hidden="true"
                 />
 
-                {/* Floating icon cards */}
-                <motion.div
-                  className="absolute top-8 left-8 w-32 h-32 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(79,124,255,0.2), rgba(139,92,246,0.2))',
-                    border: '1px solid rgba(79,124,255,0.3)',
-                  }}
-                  animate={{ rotate: [0, 3, -3, 0], y: [0, -6, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <Code className="w-14 h-14 text-accent-blue" aria-hidden="true" />
-                </motion.div>
-
-                <motion.div
-                  className="absolute top-12 right-10 w-28 h-28 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(34,211,238,0.2))',
-                    border: '1px solid rgba(139,92,246,0.3)',
-                  }}
-                  animate={{ scale: [1, 1.05, 1], x: [0, 5, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                >
-                  <Brain className="w-12 h-12 text-accent-purple" aria-hidden="true" />
-                </motion.div>
-
-                <motion.div
-                  className="absolute bottom-10 left-12 w-36 h-36 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(34,211,238,0.2), rgba(79,124,255,0.2))',
-                    border: '1px solid rgba(34,211,238,0.3)',
-                  }}
-                  animate={{ y: [0, 8, 0], rotate: [0, -2, 2, 0] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                >
-                  <Zap className="w-16 h-16 text-accent-cyan" aria-hidden="true" />
-                </motion.div>
-
-                <motion.div
-                  className="absolute bottom-8 right-8 w-24 h-24 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                  }}
-                  animate={{ scale: [1, 1.08, 1] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-                >
-                  <Award className="w-10 h-10 text-accent-blue/60" aria-hidden="true" />
-                </motion.div>
-
-                {/* Center pulse */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(79,124,255,0.2), rgba(139,92,246,0.2))',
-                    border: '1px solid rgba(79,124,255,0.3)',
-                  }}
-                  animate={{ scale: [1, 1.12, 1], opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                >
+                {/* Badge overlay */}
+                <div className="absolute bottom-6 left-6 right-6">
                   <div
-                    className="w-8 h-8 rounded-full"
-                    style={{ background: 'linear-gradient(135deg, #4F7CFF, #8B5CF6)' }}
-                    aria-hidden="true"
-                  />
-                </motion.div>
+                    className="glass rounded-xl px-5 py-4 flex items-center gap-4"
+                    style={{ borderColor: 'rgba(201,168,76,0.2)' }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-syne font-black text-bg-dark"
+                      style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c96a)', fontSize: 14 }}
+                    >
+                      MD
+                    </div>
+                    <div>
+                      <p className="font-syne font-bold text-white">Mukesh Dewangan</p>
+                      <p className="text-xs text-gold">Full-Stack Developer & AI Engineer</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                {/* Particles */}
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-1.5 h-1.5 rounded-full"
-                    style={{
-                      backgroundColor: ['#4F7CFF', '#8B5CF6', '#22D3EE', '#4F7CFF', '#8B5CF6'][i],
-                      top: `${20 + i * 15}%`,
-                      left: `${20 + i * 14}%`,
-                    }}
-                    animate={{ opacity: [0, 0.8, 0], scale: [0, 1, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.6 }}
-                    aria-hidden="true"
-                  />
-                ))}
-              </motion.div>
+              {/* Floating stat card */}
+              <div
+                className="absolute -right-8 top-16 glass-gold rounded-xl px-5 py-4 text-center animate-float"
+                style={{ zIndex: 10 }}
+                aria-hidden="true"
+              >
+                <div className="font-syne font-extrabold text-3xl text-white">5+</div>
+                <div className="text-xs text-gold uppercase tracking-widest mt-1">Years</div>
+              </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Text right */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="max-w-xl"
-          >
-            <span
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-blue mb-6"
-              style={{ backgroundColor: 'rgba(79,124,255,0.08)' }}
-            >
-              MEET MUKESH
-            </span>
+          {/* Right — Text */}
+          <div className="about-text-block opacity-0">
+            <span className="label-tag mb-6 inline-flex">About Mukesh</span>
 
             <h2
               id="about-heading"
-              className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-8"
+              className="heading-lg text-white mb-6"
+              style={{ fontSize: 'clamp(32px, 4vw, 56px)' }}
             >
-              Meet Mukesh.
+              The Developer
+              <br />
+              Behind the Work
             </h2>
 
-            <div className="space-y-5 text-lg leading-relaxed">
-              <p className="text-text-secondary">
-                Mukesh Dewangan is a technology-focused digital builder passionate about creating
-                modern websites, powerful applications and intelligent AI systems.
+            <div className="space-y-4 text-gray-400 leading-relaxed mb-10">
+              <p>
+                I'm Mukesh Dewangan — a full-stack developer and AI engineer based in India,
+                passionate about building digital products that don't just look great, but
+                actually move the needle for businesses.
               </p>
-              <p className="text-text-secondary">
-                With a focus on design, technology and automation, the goal is simple — help
-                businesses transform ideas into digital products that are useful, scalable and
-                built for the future.
+              <p>
+                From crafting pixel-perfect interfaces to building intelligent AI agents and
+                automation pipelines, I work across the full stack to deliver products that
+                are fast, scalable, and future-proof.
               </p>
             </div>
 
-            {/* Stats */}
-            <div className="mt-10 grid grid-cols-3 gap-4">
-              {[
-                { icon: Code, label: 'Full-Stack Dev', value: '5+ Yrs' },
-                { icon: Brain, label: 'AI & Automation', value: 'Expert' },
-                { icon: Zap, label: 'Products', value: '10+' },
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 + index * 0.1, duration: 0.4 }}
-                  className="p-4 rounded-xl border border-white/[0.08] text-center"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+            {/* Skill chips */}
+            <div className="skill-chips flex flex-wrap gap-3 mb-10">
+              {skills.map((skill) => (
+                <div
+                  key={skill.label}
+                  className="skill-chip opacity-0 flex items-center gap-2 px-4 py-2.5 rounded-full"
+                  style={{
+                    background: `${skill.color}12`,
+                    border: `1px solid ${skill.color}30`,
+                  }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
-                    style={{ background: 'linear-gradient(135deg, rgba(79,124,255,0.2), rgba(139,92,246,0.2))' }}
-                  >
-                    <stat.icon className="w-5 h-5 text-accent-blue" aria-hidden="true" />
-                  </div>
-                  <p className="font-display font-bold text-xl text-white">{stat.value}</p>
-                  <p className="text-xs text-text-secondary mt-1">{stat.label}</p>
-                </motion.div>
+                  <skill.icon className="w-4 h-4 flex-shrink-0" style={{ color: skill.color }} aria-hidden="true" />
+                  <span className="text-sm font-medium text-white">{skill.label}</span>
+                </div>
               ))}
             </div>
-          </motion.div>
+
+            {/* Timeline */}
+            <div className="timeline-wrap space-y-5 mb-10">
+              <h3 className="font-syne font-semibold text-sm text-gray-500 uppercase tracking-widest mb-4">Journey</h3>
+              {timeline.map((item) => (
+                <div key={item.year} className="timeline-item opacity-0 flex items-start gap-4">
+                  <div
+                    className="font-syne font-bold text-xs px-3 py-1.5 rounded-full flex-shrink-0 mt-0.5"
+                    style={{
+                      background: 'rgba(201,168,76,0.12)',
+                      border: '1px solid rgba(201,168,76,0.25)',
+                      color: '#c9a84c',
+                    }}
+                  >
+                    {item.year}
+                  </div>
+                  <p className="text-sm text-gray-400 leading-relaxed pt-1">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              className="btn-gold"
+              onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Work With Me
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </section>

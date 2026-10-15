@@ -1,159 +1,117 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Zap, Sparkles, Bot, TrendingUp, Palette, Shield } from 'lucide-react';
-import { Card } from './ui/Card';
+import { useEffect, useRef } from 'react';
+import { Shield, Clock, TrendingUp, Users, Code2, Star } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const features = [
+gsap.registerPlugin(ScrollTrigger);
+
+const reasons = [
   {
-    icon: Zap,
-    title: 'Fast Execution',
-    description: 'Clear communication and rapid development cycles without compromising quality.',
-    color: '#4F7CFF',
+    icon: Code2,
+    title: 'Senior-Level Quality',
+    desc: 'Every project is built with production-grade code — clean, scalable, and maintainable long-term.',
+    color: '#5b8dee',
   },
   {
-    icon: Sparkles,
-    title: 'Modern Technology',
-    description: 'We use modern tools and scalable architecture that stands the test of time.',
-    color: '#8B5CF6',
-  },
-  {
-    icon: Bot,
-    title: 'AI First',
-    description: "We actively integrate AI where it creates real value, not just for buzzwords.",
-    color: '#22D3EE',
+    icon: Clock,
+    title: 'On Time, Every Time',
+    desc: 'We set realistic deadlines and hit them. Transparent updates throughout, no nasty surprises.',
+    color: '#c9a84c',
   },
   {
     icon: TrendingUp,
-    title: 'Business Focused',
-    description: "We don't just build software — we build solutions that drive growth.",
-    color: '#10B981',
-  },
-  {
-    icon: Palette,
-    title: 'Premium Design',
-    description: 'Every product is designed with attention to detail and user experience.',
-    color: '#F59E0B',
+    title: 'Business-First Thinking',
+    desc: 'We think like your co-founder, not just a coder. Every decision is driven by your business goals.',
+    color: '#a78bfa',
   },
   {
     icon: Shield,
-    title: 'Scalable Architecture',
-    description: 'Built to grow with your business, from startup to enterprise scale.',
-    color: '#EC4899',
+    title: 'Secure by Default',
+    desc: 'Security is never an afterthought. Authentication, data handling, and APIs are built to best practices.',
+    color: '#67e8f9',
+  },
+  {
+    icon: Users,
+    title: 'True Partnership',
+    desc: 'You get direct access to the person building your product. No project managers, no miscommunication.',
+    color: '#f9a8d4',
+  },
+  {
+    icon: Star,
+    title: 'Premium Support',
+    desc: 'Launch is just the beginning. Ongoing support ensures your product keeps running smoothly.',
+    color: '#86efac',
   },
 ];
 
 export function WhyUs() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.why-header',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: '.why-header', start: 'top 80%' } }
+      );
+      gsap.fromTo('.why-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+          scrollTrigger: { trigger: '.why-grid', start: 'top 75%' },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       className="relative section-padding overflow-hidden"
-      aria-labelledby="whyus-heading"
+      aria-labelledby="why-heading"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.06) 0%, transparent 60%)',
-        }}
-      />
+      <div className="noise-overlay" aria-hidden="true" />
 
       <div className="container-custom relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-purple mb-6"
-            style={{ backgroundColor: 'rgba(139,92,246,0.08)' }}
-          >
-            BUILT DIFFERENT
-          </span>
+        <div className="why-header text-center max-w-2xl mx-auto mb-16 opacity-0">
+          <span className="label-tag mb-5 inline-flex">Why Choose Us</span>
           <h2
-            id="whyus-heading"
-            className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6"
+            id="why-heading"
+            className="heading-lg text-white mb-5"
+            style={{ fontSize: 'clamp(32px, 4vw, 56px)' }}
           >
-            Built Different.{' '}
+            Built Different,
             <br />
-            <span
+            <span className="text-gradient-gold">Delivered Better</span>
+          </h2>
+          <p className="text-gray-400 leading-relaxed">
+            We don't just write code. We partner with you to build digital products that grow your business.
+          </p>
+        </div>
+
+        <div className="why-grid grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {reasons.map((reason) => (
+            <div
+              key={reason.title}
+              className="why-card opacity-0 group p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-default"
               style={{
-                backgroundImage: 'linear-gradient(135deg, #4F7CFF, #8B5CF6)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                background: 'rgba(10,13,26,0.6)',
+                border: '1px solid rgba(255,255,255,0.06)',
               }}
             >
-              Built Better.
-            </span>
-          </h2>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-            Why ambitious teams choose us for their digital transformation.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-            >
-              <FeatureCard feature={feature} />
-            </motion.div>
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+                style={{ background: `${reason.color}15`, border: `1px solid ${reason.color}30` }}
+              >
+                <reason.icon className="w-5 h-5" style={{ color: reason.color }} aria-hidden="true" />
+              </div>
+              <h3 className="font-syne font-bold text-white mb-2.5">{reason.title}</h3>
+              <p className="text-sm text-gray-400 leading-relaxed">{reason.desc}</p>
+            </div>
           ))}
         </div>
       </div>
     </section>
-  );
-}
-
-function FeatureCard({ feature }: { feature: (typeof features)[0] }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <Card
-      variant="interactive"
-      padding="lg"
-      className="h-full group relative overflow-hidden cursor-default"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Hover bg glow */}
-      <div
-        className="absolute inset-0 rounded-2xl transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `linear-gradient(135deg, ${feature.color}12, ${feature.color}25)`,
-          opacity: isHovered ? 1 : 0,
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110"
-          style={{
-            background: `linear-gradient(135deg, ${feature.color}20, ${feature.color}40)`,
-          }}
-        >
-          <feature.icon className="w-7 h-7" style={{ color: feature.color }} aria-hidden="true" />
-        </div>
-
-        <h3 className="font-display font-bold text-xl text-white mb-3">{feature.title}</h3>
-        <p className="text-text-secondary leading-relaxed">{feature.description}</p>
-      </div>
-
-      {/* Bottom line */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left rounded-full"
-        style={{ background: `linear-gradient(90deg, ${feature.color}, transparent)` }}
-        initial={{ scaleX: 0 }}
-        animate={isHovered ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 0.4 }}
-        aria-hidden="true"
-      />
-    </Card>
   );
 }

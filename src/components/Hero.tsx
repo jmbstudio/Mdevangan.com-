@@ -1,404 +1,310 @@
-import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Brain, Smartphone, Code } from 'lucide-react';
-import { Button } from './ui/Button';
+import { useEffect, useRef } from 'react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const trustIndicators = [
-  { icon: Code, label: 'Web Development' },
-  { icon: Smartphone, label: 'Mobile Apps' },
-  { icon: Brain, label: 'AI Agents' },
-  { icon: Zap, label: 'Automation' },
+gsap.registerPlugin(ScrollTrigger);
+
+const stats = [
+  { value: '50+', label: 'Projects Shipped' },
+  { value: '5+', label: 'Years Experience' },
+  { value: '100%', label: 'Client Satisfaction' },
 ];
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headRef = useRef<HTMLDivElement>(null);
+  const subRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+
   const scrollTo = (id: string) =>
     document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.3 });
+
+      tl.fromTo(badgeRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7 }
+      );
+      tl.fromTo('.hero-line',
+        { opacity: 0, y: 60, skewY: 2 },
+        { opacity: 1, y: 0, skewY: 0, duration: 0.9, stagger: 0.12 },
+        '-=0.3'
+      );
+      tl.fromTo(subRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.7 },
+        '-=0.5'
+      );
+      tl.fromTo(ctaRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6 },
+        '-=0.4'
+      );
+      tl.fromTo(statsRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6 },
+        '-=0.3'
+      );
+      tl.fromTo(imgRef.current,
+        { opacity: 0, scale: 1.05, x: 40 },
+        { opacity: 1, scale: 1, x: 0, duration: 1.1, ease: 'power3.out' },
+        '-=1.2'
+      );
+
+      // Parallax on scroll
+      gsap.to(imgRef.current, {
+        yPercent: -12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 lg:pt-20"
+      className="relative min-h-screen flex items-center overflow-hidden bg-mesh"
       aria-labelledby="hero-heading"
     >
-      {/* Background glows */}
+      {/* Noise texture */}
+      <div className="noise-overlay" aria-hidden="true" />
+
+      {/* Subtle grid lines */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background:
-            'radial-gradient(ellipse at 60% 40%, rgba(79,124,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 30% 70%, rgba(139,92,246,0.08) 0%, transparent 60%)',
-        }}
-      />
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        className="absolute inset-0 pointer-events-none opacity-[0.025]"
         aria-hidden="true"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(79,124,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(79,124,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+            'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
         }}
       />
 
-      {/* Floating orbs */}
-      <motion.div
-        className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full pointer-events-none"
+      {/* Gold accent line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)' }}
         aria-hidden="true"
-        style={{
-          background: 'radial-gradient(circle, rgba(79,124,255,0.08) 0%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
 
-      <div className="container-custom relative z-10 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left — text */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="max-w-2xl"
-          >
+      <div className="container-custom relative z-10 w-full pt-20 lg:pt-0">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center min-h-screen lg:min-h-0 py-20 lg:py-32">
+
+          {/* LEFT — Text */}
+          <div className="max-w-2xl">
             {/* Badge */}
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.08] text-sm font-medium text-accent-blue mb-8"
-              style={{ backgroundColor: 'rgba(79,124,255,0.08)' }}
-            >
-              <motion.span
-                className="w-2 h-2 rounded-full bg-accent-cyan inline-block"
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+            <span ref={badgeRef} className="label-tag mb-8 inline-flex opacity-0">
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse"
                 aria-hidden="true"
               />
-              ✦ DIGITAL PRODUCTS • AI • AUTOMATION
-            </motion.span>
+              Available for Projects
+            </span>
 
             {/* Headline */}
-            <motion.h1
+            <h1
               id="hero-heading"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.08] text-white mb-8"
+              ref={headRef}
+              className="heading-xl text-white mb-8"
+              style={{ fontSize: 'clamp(44px, 6vw, 88px)' }}
             >
-              We Build Digital{' '}
-              <br className="hidden sm:block" />
-              Experiences{' '}
-              <br />
-              <span
-                style={{
-                  backgroundImage: 'linear-gradient(135deg, #4F7CFF, #8B5CF6, #22D3EE)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                for the Future
-              </span>
-            </motion.h1>
+              <div className="hero-line overflow-hidden">
+                <span className="block opacity-0">We Build</span>
+              </div>
+              <div className="hero-line overflow-hidden">
+                <span className="block opacity-0">
+                  <em
+                    className="not-italic text-gradient-gold"
+                    style={{ fontStyle: 'normal' }}
+                  >
+                    Premium
+                  </em>{' '}
+                  Digital
+                </span>
+              </div>
+              <div className="hero-line overflow-hidden">
+                <span className="block opacity-0">Products.</span>
+              </div>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.6 }}
-              className="text-lg lg:text-xl text-text-secondary leading-relaxed mb-10 max-w-xl"
+            <p
+              ref={subRef}
+              className="text-lg lg:text-xl text-gray-400 leading-relaxed mb-10 max-w-xl opacity-0"
             >
-              From premium websites and powerful mobile applications to intelligent AI agents and
-              automation systems — we help ambitious businesses turn ideas into scalable digital
-              products.
-            </motion.p>
+              From stunning websites and mobile apps to intelligent AI agents —
+              Mukesh Dewangan turns ambitious ideas into scalable digital products
+              that drive real business growth.
+            </p>
 
-            {/* CTA buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 mb-14"
-            >
-              <Button
-                size="lg"
-                variant="primary"
+            {/* CTAs */}
+            <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 mb-14 opacity-0">
+              <button
+                className="btn-gold"
                 onClick={() => scrollTo('#contact')}
-                className="group w-full sm:w-auto"
               >
-                Start Your Project
-                <ArrowRight
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
-                  aria-hidden="true"
-                />
-              </Button>
-              <Button
-                size="lg"
-                variant="secondary"
+                Start a Project
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+              <button
+                className="btn-outline"
                 onClick={() => scrollTo('#work')}
-                className="w-full sm:w-auto"
               >
-                Explore Our Work
-                <ArrowRight className="w-5 h-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
+                View Work
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
 
-            {/* Trust indicators */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65, duration: 0.6 }}
-              className="flex flex-wrap gap-3"
-            >
-              {trustIndicators.map((item, index) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 + index * 0.1, duration: 0.4 }}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-white/[0.08] rounded-xl text-sm text-text-secondary hover:border-accent-blue/30 hover:text-white transition-all duration-300 cursor-default"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-                >
-                  <item.icon className="w-4 h-4 text-accent-blue" aria-hidden="true" />
-                  <span>{item.label}</span>
-                </motion.div>
+            {/* Stats */}
+            <div ref={statsRef} className="flex items-center gap-8 opacity-0">
+              {stats.map((s, i) => (
+                <div key={s.label}>
+                  <div className="font-syne font-800 text-2xl text-white mb-0.5">{s.value}</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-widest">{s.label}</div>
+                  {i < stats.length - 1 && (
+                    <></>
+                  )}
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Right — visual */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.9, ease: 'easeOut' }}
-            className="relative hidden lg:block"
+          {/* RIGHT — Image */}
+          <div
+            ref={imgRef}
+            className="relative hidden lg:block opacity-0"
             role="img"
-            aria-label="Abstract technology visualization"
+            aria-label="Mukesh Dewangan - Digital Product Builder"
           >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              {/* Outer glow */}
+            {/* Main image card */}
+            <div className="relative">
+              {/* Decorative frame */}
               <div
-                className="absolute -inset-8 rounded-full pointer-events-none"
-                aria-hidden="true"
+                className="absolute -inset-px rounded-2xl pointer-events-none z-10"
                 style={{
-                  background:
-                    'radial-gradient(circle, rgba(79,124,255,0.1) 0%, transparent 70%)',
-                  filter: 'blur(20px)',
+                  background: 'linear-gradient(135deg, rgba(201,168,76,0.3), transparent 40%, rgba(91,141,238,0.2))',
                 }}
+                aria-hidden="true"
               />
 
-              {/* Card container */}
-              <motion.div
-                className="absolute inset-0 rounded-3xl border overflow-hidden"
-                style={{
-                  borderColor: 'rgba(255,255,255,0.08)',
-                  backgroundColor: 'rgba(13,19,33,0.8)',
-                  backdropFilter: 'blur(20px)',
-                }}
-                animate={{
-                  borderColor: [
-                    'rgba(255,255,255,0.08)',
-                    'rgba(79,124,255,0.3)',
-                    'rgba(139,92,246,0.3)',
-                    'rgba(255,255,255,0.08)',
-                  ],
-                }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              {/* Image */}
+              <div
+                className="relative rounded-2xl overflow-hidden"
+                style={{ aspectRatio: '4/5', maxWidth: 480, marginLeft: 'auto' }}
               >
-                {/* Grid bg */}
+                <img
+                  src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=960&q=85&auto=format&fit=crop"
+                  alt="Developer workspace"
+                  className="image-cover"
+                  loading="eager"
+                />
+                {/* Dark overlay gradient */}
                 <div
-                  className="absolute inset-0 opacity-[0.06]"
+                  className="absolute inset-0"
                   style={{
-                    backgroundImage:
-                      'linear-gradient(rgba(79,124,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(79,124,255,0.8) 1px, transparent 1px)',
-                    backgroundSize: '40px 40px',
+                    background: 'linear-gradient(to top, rgba(5,7,15,0.8) 0%, rgba(5,7,15,0.2) 50%, transparent 100%)',
                   }}
                   aria-hidden="true"
                 />
+              </div>
 
-                {/* Floating code card */}
-                <motion.div
-                  className="absolute top-6 left-6 rounded-xl border p-4"
-                  style={{
-                    width: 200,
-                    background: 'linear-gradient(135deg, rgba(79,124,255,0.15), rgba(139,92,246,0.15))',
-                    borderColor: 'rgba(79,124,255,0.3)',
-                  }}
-                  animate={{ y: [0, -10, 0], x: [0, 4, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <span className="w-3 h-3 rounded-full bg-red-400/70" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-                    <span className="w-3 h-3 rounded-full bg-green-400/70" />
+              {/* Floating card — experience */}
+              <div
+                className="absolute -left-12 top-20 glass-gold rounded-xl px-5 py-4 animate-float"
+                style={{ zIndex: 20 }}
+              >
+                <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">Experience</p>
+                <p className="font-syne font-bold text-2xl text-white">5+ Years</p>
+                <p className="text-xs text-gold mt-1">Full-Stack + AI</p>
+              </div>
+
+              {/* Floating card — projects */}
+              <div
+                className="absolute -right-8 bottom-28 glass-gold rounded-xl px-5 py-4"
+                style={{ zIndex: 20, animation: 'float-slow 9s ease-in-out infinite reverse' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c96a)' }}
+                  >
+                    <span className="text-bg-dark font-black text-sm font-syne">✓</span>
                   </div>
-                  <div className="font-mono text-xs space-y-1.5 text-white/60">
-                    <div><span className="text-accent-blue">const</span> agent <span className="text-white/40">=</span> <span className="text-accent-cyan">new</span></div>
-                    <div className="ml-2 text-accent-purple">AIAgent</div>
-                    <div><span className="text-white/40">{'({'}</span> model: <span className="text-green-400">'gpt-4'</span><span className="text-white/40">{' })'}</span></div>
+                  <div>
+                    <p className="font-syne font-bold text-white text-lg leading-none">50+</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Projects Shipped</p>
                   </div>
-                </motion.div>
+                </div>
+              </div>
 
-                {/* Spinning ring */}
-                <motion.div
-                  className="absolute top-10 right-10 rounded-xl border flex items-center justify-center"
-                  style={{
-                    width: 140,
-                    height: 140,
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(34,211,238,0.15))',
-                    borderColor: 'rgba(139,92,246,0.3)',
-                  }}
-                  animate={{ rotate: [0, 1, -1, 0], scale: [1, 1.02, 1] }}
-                  transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              {/* Bottom label */}
+              <div
+                className="absolute bottom-6 left-6 right-6 z-20"
+              >
+                <div
+                  className="glass rounded-xl px-5 py-3 flex items-center justify-between"
                 >
-                  <svg viewBox="0 0 80 80" className="w-20 h-20">
-                    <circle
-                      cx="40" cy="40" r="32"
-                      fill="none"
-                      stroke="rgba(34,211,238,0.2)"
-                      strokeWidth="2"
-                    />
-                    <motion.circle
-                      cx="40" cy="40" r="32"
-                      fill="none"
-                      stroke="#22D3EE"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeDasharray="60 141"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                      style={{ transformOrigin: '40px 40px' }}
-                    />
-                    <Brain
-                      x="28" y="28"
-                      width="24" height="24"
-                      className="text-accent-blue"
-                    />
-                  </svg>
-                </motion.div>
-
-                {/* Stats card */}
-                <motion.div
-                  className="absolute bottom-24 left-8 rounded-xl border p-4"
-                  style={{
-                    width: 200,
-                    background: 'linear-gradient(135deg, rgba(34,211,238,0.12), rgba(79,124,255,0.12))',
-                    borderColor: 'rgba(34,211,238,0.3)',
-                  }}
-                  animate={{ y: [0, 8, 0], x: [0, -3, 0] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                >
-                  <p className="text-xs text-text-secondary mb-3 font-medium">Performance</p>
-                  <div className="space-y-2">
-                    {[
-                      { label: 'Speed', w: '90%', color: '#4F7CFF' },
-                      { label: 'Quality', w: '95%', color: '#8B5CF6' },
-                      { label: 'Scale', w: '85%', color: '#22D3EE' },
-                    ].map((bar) => (
-                      <div key={bar.label} className="flex items-center gap-2">
-                        <span className="text-xs text-text-secondary w-12">{bar.label}</span>
-                        <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{ background: bar.color }}
-                            initial={{ width: 0 }}
-                            animate={{ width: bar.w }}
-                            transition={{ duration: 1.5, delay: 1, ease: 'easeOut' }}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                  <div>
+                    <p className="font-syne font-bold text-white">Mukesh Dewangan</p>
+                    <p className="text-xs text-gold">Digital Product Builder & AI Developer</p>
                   </div>
-                </motion.div>
-
-                {/* AI Badge */}
-                <motion.div
-                  className="absolute bottom-8 right-8 rounded-xl border px-4 py-3 flex items-center gap-2"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(79,124,255,0.15), rgba(139,92,246,0.15))',
-                    borderColor: 'rgba(79,124,255,0.3)',
-                  }}
-                  animate={{ scale: [1, 1.04, 1] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                >
-                  <motion.div
-                    className="w-3 h-3 rounded-full bg-accent-cyan"
-                    animate={{ opacity: [1, 0.3, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c96a)' }}
                     aria-hidden="true"
-                  />
-                  <span className="text-sm font-semibold text-white">AI Ready</span>
-                </motion.div>
-
-                {/* Center brain */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(79,124,255,0.2), rgba(139,92,246,0.2))',
-                    border: '1px solid rgba(79,124,255,0.3)',
-                  }}
-                  animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <Brain className="w-9 h-9 text-accent-blue" aria-hidden="true" />
-                </motion.div>
-
-                {/* Particles */}
-                {[...Array(6)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-1.5 h-1.5 rounded-full"
-                    style={{
-                      backgroundColor: ['#4F7CFF', '#8B5CF6', '#22D3EE'][i % 3],
-                      top: `${20 + i * 12}%`,
-                      left: `${15 + i * 13}%`,
-                    }}
-                    animate={{ opacity: [0, 0.8, 0], scale: [0, 1, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      delay: i * 0.5,
-                      ease: 'easeInOut',
-                    }}
-                    aria-hidden="true"
-                  />
-                ))}
-              </motion.div>
+                  >
+                    <span className="text-bg-dark font-black text-xs font-syne">MD</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-text-secondary/50"
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         aria-hidden="true"
       >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2"
+        <div
+          className="w-px h-16 relative overflow-hidden"
+          style={{ background: 'rgba(255,255,255,0.1)' }}
         >
-          <motion.div
-            className="w-1.5 h-1.5 rounded-full bg-accent-blue"
-            animate={{ y: [0, 6, 0], opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          <div
+            className="absolute top-0 left-0 w-full bg-gold"
+            style={{
+              height: '50%',
+              animation: 'scrollLine 2s ease-in-out infinite',
+            }}
           />
-        </motion.div>
-        <span className="text-xs font-medium tracking-wider uppercase">Scroll</span>
-      </motion.div>
+        </div>
+        <span className="text-xs text-gray-600 uppercase tracking-[0.2em]">Scroll</span>
+      </div>
+
+      <style>{`
+        @keyframes scrollLine {
+          0% { top: -50%; }
+          100% { top: 100%; }
+        }
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-14px); }
+        }
+      `}</style>
     </section>
   );
 }
